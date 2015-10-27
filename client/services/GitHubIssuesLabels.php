@@ -70,13 +70,13 @@ class GitHubIssuesLabels extends GitHubService
 	}
 	
 	/**
-	 * Remove labels to an issue
+	 * Remove labels from an issue
 	 * 
 	 */
-	public function removeLabelsToAnIssue($owner, $repo, $number, $name)
+	public function removeLabelsFromAnIssue($owner, $repo, $number, $name)
 	{
-		$data = array($name);
-		return $this->client->request("/repos/$owner/$repo/issues/$number/labels/$name", 'DELETE',null, 200, '');
+		$data = array();
+		return $this->client->request("/repos/$owner/$repo/issues/$number/labels/$name", 'DELETE',$data, 200, '');
 	}
 	
 	/**
