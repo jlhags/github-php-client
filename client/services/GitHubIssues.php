@@ -8,7 +8,7 @@ require_once(__DIR__ . '/GitHubIssuesEvents.php');
 require_once(__DIR__ . '/GitHubIssuesLabels.php');
 require_once(__DIR__ . '/GitHubIssuesMilestones.php');
 require_once(__DIR__ . '/../objects/GitHubIssue.php');
-	
+
 
 class GitHubIssues extends GitHubService
 {
@@ -17,42 +17,42 @@ class GitHubIssues extends GitHubService
 	 * @var GitHubIssuesAssignees
 	 */
 	public $assignees;
-	
+
 	/**
 	 * @var GitHubIssuesComments
 	 */
 	public $comments;
-	
+
 	/**
 	 * @var GitHubIssuesEvents
 	 */
 	public $events;
-	
+
 	/**
 	 * @var GitHubIssuesLabels
 	 */
 	public $labels;
-	
+
 	/**
 	 * @var GitHubIssuesMilestones
 	 */
 	public $milestones;
-	
-	
+
+
 	/**
 	 * Initialize sub services
 	 */
 	public function __construct(GitHubClient $client)
 	{
 		parent::__construct($client);
-		
+
 		$this->assignees = new GitHubIssuesAssignees($client);
 		$this->comments = new GitHubIssuesComments($client);
 		$this->events = new GitHubIssuesEvents($client);
 		$this->labels = new GitHubIssuesLabels($client);
 		$this->milestones = new GitHubIssuesMilestones($client);
 	}
-	
+
 	/**
 	 * List all issues
 	 * @param $owner boolean|string true, for all my issues, false, for all issues or organization name all issues
@@ -60,7 +60,7 @@ class GitHubIssues extends GitHubService
 	 * 					assigned: Issues assigned to you
 	 * 					created: Issues created by you
 	 * 					mentioned: Issues mentioning you
-	 * 					subscribed: Issues you’re subscribed to updates for
+	 * 					subscribed: Issues youï¿½re subscribed to updates for
 	 * 					all: All issues the authenticated user can see, regardless of participation or creation
 	 * 					Default: assigned
 	 * @param state string	Indicates the state of the issues to return. Can be either open, closed, or all. Default: open
@@ -86,19 +86,19 @@ class GitHubIssues extends GitHubService
 			$data['direction'] = $direction;
 		if(!is_null($since))
 			$data['since'] = $since;
-		
+
 		$path = '/issues';
 		if($owner === true)
 			$path = '/user/issues';
 		elseif(is_string($owner))
 			$path = "/orgs/$owner/issues";
-		
+
 		return $this->client->request($path, 'GET', $data, 200, 'GitHubIssue', true);
 	}
-	
+
 	/**
 	 * List issues
-	 * 
+	 *
 	 * @return array<GitHubIssue>
 	 */
 	public function listIssues($owner, $repo)
@@ -107,28 +107,28 @@ class GitHubIssues extends GitHubService
 
 		return $this->client->request("/repos/$owner/$repo/issues", 'GET', $data, 200, 'GitHubIssue', true);
 	}
-	
+
 	/**
 	 * List issues
-	 * 
+	 *
 	 * @return GitHubIssue
 	 */
 	public function getIssue($owner, $repo, $number)
 	{
 		$data = array();
-		
+
 		return $this->client->request("/repos/$owner/$repo/issues/$number", 'GET', $data, 200, 'GitHubIssue');
 	}
-	
+
 	/**
 	 * Create an issue
-	 * 
+	 *
 	 * @param $title string (Required) - The title of the issue.
 	 * @param $body string (Optional) - The contents of the issue.
 	 * @param $assignee string (Optional) - Login for the user that this issue should be assigned to.
 	 * @param $milestone number (Optional) - Milestone to associate this issue with.
-	 * @param $labels array (Optional) of strings - Labels to associate with this issue. 
-	 * 	Pass one or more Labels to _replace_ the set of Labels on this Issue. 
+	 * @param $labels array (Optional) of strings - Labels to associate with this issue.
+	 * 	Pass one or more Labels to _replace_ the set of Labels on this Issue.
 	 * 	Send an empty array (`[]`) to clear all Labels from the Issue.
 	 * @return GitHubIssue
 	 */
@@ -144,15 +144,15 @@ class GitHubIssues extends GitHubService
 			$data['milestone'] = $milestone;
 		if(!is_null($labels))
 			$data['labels'] = $labels;
-		
+
 		$data = json_encode($data);
-		
+
 		return $this->client->request("/repos/$owner/$repo/issues", 'POST', $data, 201, 'GitHubIssue');
 	}
 
 	/**
 	 * Edit an issue
-	 * 
+	 *
 	 * @param $body string (Optional) - The contents of the issue.
 	 * @param $assignee string (Optional) - Login for the user that this issue should be
 	 * 	assigned to.
@@ -166,6 +166,7 @@ class GitHubIssues extends GitHubService
 	public function editAnIssue($owner, $repo, $title, $number, $body = null, $assignee = null, $state = null, $milestone = null, $labels = null)
 	{
 		$data = array();
+		if(!is_null($title))
 		$data['title'] = $title;
 		if(!is_null($body))
 			$data['body'] = $body;
@@ -177,9 +178,9 @@ class GitHubIssues extends GitHubService
 			$data['milestone'] = $milestone;
 		if(!is_null($labels))
 			$data['labels'] = $labels;
-		
+
 		return $this->client->request("/repos/$owner/$repo/issues/$number", 'PATCH', json_encode($data), 200, 'GitHubIssue');
-	}		
-	
+	}
+
 }
 
