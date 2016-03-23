@@ -13,11 +13,11 @@ class GitHubIssuesMilestones extends GitHubService
 	 * 
 	 * @return GitHubMilestone
 	 */
-	public function listMilestonesForRepository($owner, $repo, $number)
+	public function listMilestonesForRepository($owner, $repo, $number = null)
 	{
 		$data = array();
-		
-		return $this->client->request("/repos/$owner/$repo/milestones/$number", 'GET', $data, 200, 'GitHubMilestone');
+		$path = ($number !== null) ? "/repos/$owner/$repo/milestones/$number" : "/repos/$owner/$repo/milestones";
+		return $this->client->request($path, 'GET', $data, 200, 'GitHubMilestone');
 	}
 	
 	/**
