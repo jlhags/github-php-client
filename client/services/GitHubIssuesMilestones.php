@@ -8,17 +8,6 @@ require_once(__DIR__ . '/../objects/GitHubMilestone.php');
 class GitHubIssuesMilestones extends GitHubService
 {
 
-	/**
-	 * List milestones for a repository
-	 *
-	 * @return array<GitHubMilestone>
-	 */
-	public function listMilestonesForRepository($owner, $repo)
-	{
-		$data = array();
-	
-		return $this->client->request("/repos/$owner/$repo/milestones", 'GET', $data, 200, 'GitHubMilestone', true);
-	}
 
 	/**
 	 * Get a single milestone
