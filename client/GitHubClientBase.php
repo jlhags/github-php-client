@@ -33,6 +33,19 @@ abstract class GitHubClientBase
 	protected $lastExpectedHttpCode = null;
 	protected $pageData = array();
 
+	protected $accept = null;
+
+	public function setAccept($value)
+	{
+		$this->accept = $value;
+	}
+
+	public function getAccept($value)
+	{
+		return $this->accept;
+	}
+
+
 	public function setAuthType($type)
 	{
 		switch($type)
@@ -196,6 +209,11 @@ abstract class GitHubClientBase
 	 */
 	protected function doRequest($url, $method, $data, $contentType = null, $filePath = null)
 	{
+		$header = array();
+		if($this->accept != null)
+		{
+			$header[] = "Accept: " . $this->accept;
+		}
 		if($method == 'FILE')
 			$url = $this->uploadUrl . $url;
 		else
@@ -220,11 +238,11 @@ abstract class GitHubClientBase
 			curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 			curl_setopt($c, CURLOPT_USERPWD, "$this->oauthKey:".self::GITHUB_AUTH_TYPE_OAUTH_BASIC);
 		}
-        elseif ( $this->authType == self::GITHUB_AUTH_TYPE_OAUTH ) {
-            curl_setopt($c, CURLOPT_HTTPHEADER, array(
-                 'Authorization: token '. $this->oauthToken,
-            ));
-        }
+		elseif ( $this->authType == self::GITHUB_AUTH_TYPE_OAUTH )
+		{
+			$header[] = 'Authorization: token '. $this->oauthToken;
+			curl_setopt($c, CURLOPT_HTTPHEADER, $header);
+		}
 		 
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($c, CURLOPT_USERAGENT, "tan-tan.github-api");
@@ -244,7 +262,8 @@ abstract class GitHubClientBase
 		switch($method)
 		{
 			case 'FILE':
-				curl_setopt($c, CURLOPT_HTTPHEADER, array("Content-type: $contentType"));
+				$header[] = "Content-type: $contentType";
+				curl_setopt($c, CURLOPT_HTTPHEADER, $header);
 				curl_setopt($c, CURLOPT_POST, true);
 				curl_setopt($c, CURLOPT_POSTFIELDS, file_get_contents($filePath));
 				
