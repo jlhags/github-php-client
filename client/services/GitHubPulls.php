@@ -3,6 +3,7 @@
 require_once(__DIR__ . '/../GitHubClient.php');
 require_once(__DIR__ . '/../GitHubService.php');
 require_once(__DIR__ . '/GitHubPullsComments.php');
+require_once(__DIR__ . '/GitHubPullsReviews.php');
 require_once(__DIR__ . '/../objects/GitHubPull.php');
 require_once(__DIR__ . '/../objects/GitHubFullPull.php');
 require_once(__DIR__ . '/../objects/GitHubCommit.php');
@@ -17,7 +18,8 @@ class GitHubPulls extends GitHubService
 	 */
 	public $comments;
 	
-	
+	public $reviews;
+
 	/**
 	 * Initialize sub services
 	 */
@@ -26,6 +28,7 @@ class GitHubPulls extends GitHubService
 		parent::__construct($client);
 		
 		$this->comments = new GitHubPullsComments($client);
+		$this->reviews = new GitHubPullsReviews($client);
 	}
 	
 	/**
